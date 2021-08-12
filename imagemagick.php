@@ -26,10 +26,10 @@ echo "
 
 echo "<pre>";
 
-$imagePath = "examples/jet-black-couch.webp";
+$imagePath = "examples/patterned-chair.jpg";
 
 $imageProcessor = new ImageColorProcessor($imagePath);
-$imageColors = $imageProcessor->getDistinctColors(2);
+$imageColors = $imageProcessor->getDistinctColors(1);
 
 $imageColors = $imageColors->getFilteredColorCollection(
 	ColorCollectionFilterFunctions::createGreyscaleFilter(239),
@@ -41,14 +41,22 @@ $imageColors = $imageColors->getFilteredColorCollection(
 //	true
 //);
 
+$imageColors = $imageColors->getFilteredColorCollection(
+	ColorCollectionFilterFunctions::createAbsoluteOccurrenceFilterFunction(5)
+);
+
 $imageColors = $imageColors->getMergedColorCollection(
 	ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(20),
-	ColorMergerFunctions::createUseFirstMergerFunction()
+	ColorMergerFunctions::createWeightedAverageMergerFunction()
 );
 
 $imageColors = $imageColors->getFilteredColorCollection(
-	ColorCollectionFilterFunctions::createMinimumOccurrenceFilterFunction(500)
+	ColorCollectionFilterFunctions::createRelativeOccurrenceFilter(0.1)
 );
+
+//$imageColors = $imageColors->getFilteredColorCollection(
+//	ColorCollectionFilterFunctions::createMinimumOccurrenceFilterFunction(500)
+//);
 
 //$imageColors->sortByIncidence();
 

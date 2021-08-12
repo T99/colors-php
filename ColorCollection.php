@@ -147,12 +147,13 @@ class ColorCollection implements ArrayAccess, Iterator {
 	public function getFilteredColorCollection(callable $filterFunction, bool $inverse = false): ColorCollection {
 		
 		$result = new ColorCollection();
+		$totalOccurrences = $this->getOccurrenceCount();
 		
 		if ($inverse) {
 			
 			foreach ($this->colorOccurrences as $colorOccurrence) {
 				
-				if (!$filterFunction($colorOccurrence)) $result->addColorOccurrences($colorOccurrence);
+				if (!$filterFunction($colorOccurrence, $totalOccurrences)) $result->addColorOccurrences($colorOccurrence);
 				
 			}
 			
@@ -160,7 +161,7 @@ class ColorCollection implements ArrayAccess, Iterator {
 			
 			foreach ($this->colorOccurrences as $colorOccurrence) {
 				
-				if ($filterFunction($colorOccurrence)) $result->addColorOccurrences($colorOccurrence);
+				if ($filterFunction($colorOccurrence, $totalOccurrences)) $result->addColorOccurrences($colorOccurrence);
 				
 			}
 			
@@ -220,6 +221,11 @@ class ColorCollection implements ArrayAccess, Iterator {
 		
 	}
 	
+	/**
+	 * Returns the grand total number of occurrences of every color in this ColorCollection.
+	 *
+	 * @return int The grand total number of occurrences of every color in this ColorCollection.
+	 */
 	public function getOccurrenceCount(): int {
 		
 		return array_reduce(
@@ -234,6 +240,11 @@ class ColorCollection implements ArrayAccess, Iterator {
 		
 	}
 	
+	/**
+	 * Returns the number of unique colors contained in this ColorCollection.
+	 *
+	 * @return int The number of unique colors contained in this ColorCollection.
+	 */
 	public function getColorCount(): int {
 		
 		return count($this->colorOccurrences);

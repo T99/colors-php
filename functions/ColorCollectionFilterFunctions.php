@@ -2,7 +2,24 @@
 
 class ColorCollectionFilterFunctions {
 	
-	public static function createMinimumOccurrenceFilterFunction(int $minimumOccurrences): callable {
+	/**
+	 * Creates a filter function that matches ColorOccurrences whose color comprises at least the specified percentage
+	 * occurrence rate.
+	 *
+	 * @param float $minimumOccurrenceRate
+	 * @return callable
+	 */
+	public static function createRelativeOccurrenceFilter(float $minimumOccurrenceRate): callable {
+		
+		return function (ColorOccurrence $colorOccurrence, int $totalOccurrences) use ($minimumOccurrenceRate): bool {
+			
+			return ((count($colorOccurrence) / $totalOccurrences) >= $minimumOccurrenceRate);
+			
+		};
+		
+	}
+	
+	public static function createAbsoluteOccurrenceFilterFunction(int $minimumOccurrences): callable {
 		
 		return function (ColorOccurrence $colorOccurrence) use ($minimumOccurrences): bool {
 			
