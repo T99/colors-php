@@ -22,8 +22,10 @@ function relativeDensityToAbsoluteDensity(float $relativeDensity, float $epsilon
 	if ($relativeDensity >= 1) return 1;
 	else if ($relativeDensity <= 0) return 0;
 
-	$ceiling = 10;
+	$ceiling = 10000;
 	$floor = 1;
+	
+	$count = 0;
 	
 	do {
 		
@@ -33,7 +35,7 @@ function relativeDensityToAbsoluteDensity(float $relativeDensity, float $epsilon
 		if ($currentRelativeDensity > $relativeDensity) $floor = $currentAbsoluteDensity;
 		else $ceiling = $currentAbsoluteDensity;
 		
-	} while (abs($currentRelativeDensity - $relativeDensity) > $epsilon);
+	} while (abs($currentRelativeDensity - $relativeDensity) > $epsilon && ++$count < 20);
 	
 	return $currentAbsoluteDensity;
 
