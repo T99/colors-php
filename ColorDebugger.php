@@ -115,7 +115,7 @@ class ColorDebugger {
 	
 	public static function showDistinctColorsForImage(string $imagePath): string {
 		
-		$imageProcessor = new ImageColorProcessor($imagePath);
+		$imageProcessor = new ColorImageProcessor($imagePath);
 		$distinctColors = $imageProcessor->getDistinctColors();
 		
 		$headerContent  = "<p>";

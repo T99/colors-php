@@ -5,7 +5,7 @@ include_once "./matrices.php";
 include_once "./ColorDebugger.php";
 include_once "./ColorOccurrence.php";
 include_once "./ColorCollection.php";
-include_once "./ImageColorProcessor.php";
+include_once "./ColorImageProcessor.php";
 include_once "./functions/ColorMergerFunctions.php";
 include_once "./functions/ColorEquivalencyFunctions.php";
 include_once "./functions/ColorCollectionFilterFunctions.php";
@@ -28,7 +28,7 @@ echo "<pre>";
 
 $imagePath = "examples/patterned-chair.jpg";
 
-$imageProcessor = new ImageColorProcessor($imagePath);
+$imageProcessor = new ColorImageProcessor($imagePath);
 $imageColors = $imageProcessor->getDistinctColors(1);
 
 $imageColors = $imageColors->getFilteredColorCollection(

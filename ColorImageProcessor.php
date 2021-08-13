@@ -2,7 +2,7 @@
 
 include_once "./ColorCollection.php";
 
-class ImageColorProcessor {
+class ColorImageProcessor {
 	
 	protected $imagePath;
 	
