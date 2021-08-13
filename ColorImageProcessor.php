@@ -13,37 +13,50 @@ class ColorImageProcessor {
 	
 	}
 	
-	/**
-	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image.
-	 *
-	 * @param int $density The 'density' at pixels will be extracted from the image. A density of 'n' means that a pixel
-	 * will be extracted from the intersection of every n columns and every n rows.
-	 * @return ColorCollection A ColorCollection object containing all of the strictly distinct colors found in the
-	 * input image.
-	 */
-	public function getDistinctColors(int $density = 1): ColorCollection {
+	public function forEachPixel(callable $consumer): void {
 		
 		$image = new \Imagick(realpath($this->imagePath));
 		$pixelRowIterator = $image->getPixelIterator();
-		$colors = new ColorCollection();
-	
+		$imageSize = new Point($image->getImageWidth(), $image->getImageHeight());
+		
 		foreach ($pixelRowIterator as $rowIndex => $pixelRow) {
-	
-			if ($rowIndex % $density !== 0) continue;
-	
+			
 			foreach ($pixelRow as $columnIndex => $pixel) {
-	
-				if ($columnIndex % $density !== 0) continue;
 				
-				$colors->addColors(Color::fromRGB($pixel->getColorAsString()));
-	
+				$coordinates = new Point($columnIndex, $rowIndex);
+				
+				$consumer($imageSize, $coordinates, $image->getImagePixelColor($coordinates->x, $coordinates->y));
+				
 			}
-	
+			
 		}
 		
-		$colors->sortByIncidence();
+	}
+	
+	/**
+	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image.
+	 *
+	 * @param int $density The 'absolute density' at pixels will be extracted from the image. An absolute density of 'n'
+	 * means that a pixel will be extracted from the intersection of every n columns and n rows.
+	 * @return ColorCollection A ColorCollection object containing all of the strictly distinct colors found in the
+	 * input image at the specified density.
+	 */
+	public function getDistinctColorsByAbsoluteDensity(int $density = 1): ColorCollection {
 		
-		return $colors;
+		$result = new ColorCollection();
+		
+		$this->forEachPixel(function (Point $imageSize, Point $pixelCoordinates, ImagickPixel $pixel)
+		                        use ($density, &$result): void {
+			
+			if (($pixelCoordinates->x % $density === 0) && ($pixelCoordinates->y % $density === 0)) {
+				
+				$result->addColors(Color::fromRGB($pixel->getColorAsString()));
+				
+			}
+			
+		});
+		
+		return $result;
 	
 	}
 	
