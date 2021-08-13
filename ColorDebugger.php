@@ -113,9 +113,8 @@ class ColorDebugger {
 		
 	}
 	
-	public static function showDistinctColorsForImage(string $imagePath): string {
+	public static function showDistinctColorsForImage(string $imagePath, ColorImageProcessor $imageProcessor): string {
 		
-		$imageProcessor = new ColorImageProcessor($imagePath);
 		$distinctColors = $imageProcessor->getDistinctColorsByAbsoluteDensity();
 		
 		$distinctColors->sortByIncidence();
