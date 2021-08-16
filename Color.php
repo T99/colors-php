@@ -22,6 +22,16 @@ class Color {
 	
 	protected $bStar;
 	
+	protected $hue;
+	
+	protected $saturation_hsb;
+	
+	protected $saturation_hsl;
+	
+	protected $brightness;
+	
+	protected $lightness;
+	
 	public function __construct(int $red, int $green, int $blue) {
 	
 		$this->setRed($red);
@@ -201,6 +211,123 @@ class Color {
 		$this->lStar = 116 * $f($this->y / $y_n) - 16;
 		$this->aStar = 500 * ($f($this->x / $x_n) - $f($this->y / $y_n));
 		$this->bStar = 200 * ($f($this->y / $y_n) - $f($this->z / $z_n));
+		
+	}
+	
+	/**
+	 * Computes the Hue-Saturation-Brightness values for this color.
+	 */
+	public function computeHSB(): void {
+		
+		$redPrime = $this->red / 255;
+		$greenPrime = $this->green / 255;
+		$bluePrime = $this->blue / 255;
+		
+		$cMax = max($redPrime, $greenPrime, $bluePrime);
+		$cMin = min($redPrime, $greenPrime, $bluePrime);
+		$cDelta = $cMax - $cMin;
+		
+		if ($cDelta === 0) $this->hue = 0;
+		else {
+			
+			switch ($cMax) {
+				
+				case $redPrime: {
+					
+					$this->hue = 60 * ((($greenPrime - $bluePrime) / $cDelta) % 6);
+					break;
+					
+				}
+				
+				case $greenPrime: {
+					
+					$this->hue = 60 * ((($bluePrime - $redPrime) / $cDelta) + 2);
+					break;
+					
+				}
+				
+				case $bluePrime: {
+					
+					$this->hue = 60 * ((($redPrime - $greenPrime) / $cDelta) + 4);
+					break;
+					
+				}
+				
+			}
+			
+		}
+		
+		if ($cMax === 0) $this->saturation_hsb = 0;
+		else $this->saturation_hsb = $cDelta / $cMax;
+		
+		$this->brightness = $cMax;
+	
+	}
+	
+	/**
+	 * Alias method for `computeHSB`, as HSV is simply another name for HSB.
+	 */
+	public function computeHSV(): void {
+		
+		$this->computeHSB();
+		
+	}
+	
+	/**
+	 * Computes the Hue-Saturation-Lightness values for this color.
+	 */
+	public function computeHSL(): void {
+		
+		if (!isset($this->brightness)) $this->computeHSB();
+		
+		$this->lightness = $this->brightness * (1 - ($this->saturation_hsb / 2));
+		
+		if ($this->lightness === 0 || $this->brightness === 1) $this->saturation_hsl = 0;
+		else {
+			
+			$this->saturation_hsl = ($this->brightness - $this->lightness) / min($this->lightness, 1 - $this->lightness);
+			
+		}
+		
+	}
+	
+	public function getHue(): int {
+		
+		if (!isset($this->hue)) $this->computeHSL();
+		
+		return round($this->hue);
+		
+	}
+	
+	public function getHSBSaturation(): float {
+		
+		if (!isset($this->saturation_hsb)) $this->computeHSB();
+		
+		return $this->saturation_hsb;
+		
+	}
+	
+	public function getHSLSaturation(): float {
+		
+		if (!isset($this->saturation_hsl)) $this->computeHSL();
+		
+		return $this->saturation_hsl;
+		
+	}
+	
+	public function getBrightness(): float {
+		
+		if (!isset($this->brightness)) $this->computeHSB();
+		
+		return $this->brightness;
+		
+	}
+	
+	public function getLightness(): float {
+		
+		if (!isset($this->lightness)) $this->computeHSL();
+		
+		return $this->lightness;
 		
 	}
 	
