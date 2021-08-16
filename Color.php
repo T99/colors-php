@@ -461,7 +461,41 @@ class Color {
 	
 	public function toRGBString(): string {
 		
-		return "rgb($this->red, $this->green, $this->blue)";
+		$red = $this->getRed();
+		$green = $this->getGreen();
+		$blue = $this->getBlue();
+		
+		return "rgb($red, $green, $blue)";
+		
+	}
+	
+	public function toHSBString(): string {
+		
+		$hue = $this->getHue();
+		$saturation = $this->getHSBSaturation();
+		$brightness = $this->getBrightness();
+		
+		return "hsb($hue, $saturation, $brightness)";
+		
+	}
+	
+	public function toHSVString(): string {
+		
+		$hue = $this->getHue();
+		$saturation = $this->getHSBSaturation();
+		$brightness = $this->getBrightness();
+		
+		return "hsv($hue, $saturation, $brightness)";
+		
+	}
+	
+	public function toHSLString(): string {
+		
+		$hue = $this->getHue();
+		$saturation = $this->getHSLSaturation();
+		$lightness = $this->getLightness();
+		
+		return "hsl($hue, $saturation, $lightness)";
 		
 	}
 	
