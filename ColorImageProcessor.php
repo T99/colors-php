@@ -61,30 +61,12 @@ class ColorImageProcessor {
 		
 	}
 	
-	public function forEachPixel(callable $consumer): void {
-		
-		$pixelRowIterator = $this->image->getPixelIterator();
-		$imageSize = $this->getImageSize();
-		
-		foreach ($pixelRowIterator as $rowIndex => $pixelRow) {
-			
-			foreach ($pixelRow as $columnIndex => $pixel) {
-				
-				$coordinates = new Point($columnIndex, $rowIndex);
-				
-				$consumer($imageSize, $coordinates, $this->image->getImagePixelColor($coordinates->x, $coordinates->y));
-				
-			}
-			
-		}
-		
-	}
-	
 	/**
-	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image.
+	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image at the
+	 * given absolute density.
 	 *
-	 * @param float $absoluteDensity The 'absolute density' at pixels will be extracted from the image. An absolute density of 'n'
-	 * means that a pixel will be extracted from the intersection of every n columns and n rows.
+	 * @param float $absoluteDensity The 'absolute density' at which pixels will be extracted from the image. An
+	 * absolute density of 'n' means that a pixel will be extracted from the intersection of every n columns and n rows.
 	 * @return ColorCollection A ColorCollection object containing all of the strictly distinct colors found in the
 	 * input image at the specified density.
 	 */
@@ -115,6 +97,15 @@ class ColorImageProcessor {
 	
 	}
 	
+	/**
+	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image at the
+	 * given relative density.
+	 *
+	 * @param float $relativeDensity The 'relative density' at which pixels will be extracted from the image. For
+	 * example, a relative density of '0.65' means that 65% of the source image's pixels will be extracted as colors.
+	 * @return ColorCollection A ColorCollection object containing all of the strictly distinct colors found in the
+	 * input image at the specified density.
+	 */
 	public function getDistinctColorsByRelativeDensity(float $relativeDensity): ColorCollection {
 		
 		return $this->getDistinctColorsByAbsoluteDensity(
@@ -123,6 +114,18 @@ class ColorImageProcessor {
 		
 	}
 	
+	/**
+	 * Returns a ColorCollection object containing all of the strictly distinct colors found in the input image, given
+	 * the maximum sample size.
+	 *
+	 * Internally, the maximum sample size is converted to a relative density, which is then converted to an absolute
+	 * density. Due to the fact that this conversion process is not entirely lossless, the final number of sampled
+	 * pixels will not necessarily match the maximum sample size.
+	 *
+	 * @param int $maxSampleSize The maximum number of pixels that should be sampled from the image.
+	 * @return ColorCollection A ColorCollection object containing all of the strictly distinct colors found in the
+	 * input image at the specified density.
+	 */
 	public function getDistinctColorsByMaximumSampleSize(int $maxSampleSize): ColorCollection {
 		
 		$imageSize = $this->getImageSize();
@@ -137,32 +140,28 @@ class ColorImageProcessor {
 		// Get up to 50,000 color samples from the image.
 		$result = $this->getDistinctColorsByMaximumSampleSize(50000);
 		
-		echo "<pre>";
-		echo "background: " . $this->guessBackgroundColor();
-		echo "</pre>";
-		
 		// Attempt to remove colors that originated from the background.
 		$result = $result->getFilteredColorCollection(
 			ColorCollectionFilterFunctions::createEquivalencyFilter(
 				$this->guessBackgroundColor(),
-				ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(30)
+				ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(10)
 			),
 			true
 		);
 		
 		// Sort the results so that the upcoming merge operation
-//		$result->sortByIncidence();
+		$result->sortByIncidence();
 		
 		// Use a weighted merge to merge colors that are found to have a CIE94 delta-E of 30 or less.
-//		$result = $result->getMergedColorCollection(
-//			ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(30),
-//			ColorMergerFunctions::createWeightedAverageMergerFunction()
-//		);
+		$result = $result->getMergedColorCollection(
+			ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(30),
+			ColorMergerFunctions::createWeightedAverageMergerFunction()
+		);
 		
 		// Limit the results to only colors that comprise at least %5 of the colorspace.
-//		$result = $result->getFilteredColorCollection(
-//			ColorCollectionFilterFunctions::createRelativeOccurrenceFilter(0.05)
-//		);
+		$result = $result->getFilteredColorCollection(
+			ColorCollectionFilterFunctions::createRelativeOccurrenceFilter(0.05)
+		);
 		
 		// Sort the result set by incidence in descending order.
 		$result->sortByIncidence();
