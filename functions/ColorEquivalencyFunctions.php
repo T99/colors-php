@@ -103,6 +103,8 @@ class ColorEquivalencyFunctions {
 			$S_H = 1 + $K_2 * $CStar_1;
 			$deltaHStar_ab = sqrt(pow($deltaAStar, 2) + pow($deltaBStar, 2) - pow($deltaCStar_ab, 2));
 			
+			if (is_nan($deltaHStar_ab)) $deltaHStar_ab = 0;
+			
 			$LComponent = pow($deltaLStar / ($k_L * $S_L), 2);
 			$CComponent = pow($deltaCStar_ab / ($k_C * $S_C), 2);
 			$HComponent = pow($deltaHStar_ab / ($k_H * $S_H), 2);
