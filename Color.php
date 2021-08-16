@@ -371,6 +371,14 @@ class Color {
 		
 	}
 	
+	public function getHSVSaturation(): float {
+		
+		if (!isset($this->saturation_hsb)) $this->computeHSB();
+		
+		return $this->saturation_hsb;
+		
+	}
+	
 	public function getHSLSaturation(): float {
 		
 		if (!isset($this->saturation_hsl)) $this->computeHSL();
