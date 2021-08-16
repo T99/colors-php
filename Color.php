@@ -115,24 +115,26 @@ class Color {
 	
 	public static function fromHSL(float $hue, float $saturation, float $lightness): Color {
 		
+		$hue = fmod($hue, 360);
+		
 		$chroma = $saturation * (1 - abs((2 * $lightness) - 1));
 		
 		$huePrime = $hue / 60;
-		$x = $chroma * (1 - abs(($huePrime % 2) - 1));
-		
-		if ($huePrime < 1)      $color = new Color($chroma, $x, 0);
-		else if ($huePrime < 2) $color = new Color($x, $chroma, 0);
-		else if ($huePrime < 3) $color = new Color(0, $chroma, $x);
-		else if ($huePrime < 4) $color = new Color(0, $x, $chroma);
-		else if ($huePrime < 5) $color = new Color($x, 0, $chroma);
-		else if ($huePrime < 6) $color = new Color($chroma, 0, $x);
-		else                     $color = new Color(0, 0, 0);
+		$x = $chroma * (1 - abs(fmod($huePrime, 2) - 1));
 		
 		$m = $lightness - ($chroma / 2);
 		
-		$color->setRed($color->getRed() + $m);
-		$color->setGreen($color->getGreen() + $m);
-		$color->setBlue($color->getBlue() + $m);
+		$chroma255 = round(255 * ($chroma + $m));
+		$x255      = round(255 * ($x + $m));
+		$m255      = round(255 * $m);
+		
+		     if ($huePrime < 1) $color = new Color($chroma255, $x255, $m255);
+		else if ($huePrime < 2) $color = new Color($x255, $chroma255, $m255);
+		else if ($huePrime < 3) $color = new Color($m255, $chroma255, $x255);
+		else if ($huePrime < 4) $color = new Color($m255, $x255, $chroma255);
+		else if ($huePrime < 5) $color = new Color($x255, $m255, $chroma255);
+		else if ($huePrime < 6) $color = new Color($chroma255, $m255, $x255);
+		else                    $color = new Color(0, 0, 0);
 		
 		$color->hue = $hue;
 		$color->saturation_hsl = $saturation;
