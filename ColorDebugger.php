@@ -24,6 +24,52 @@ class ColorDebugger {
 		
 	}
 	
+	public static function showColorCollection(ColorCollection &$colorCollection): string {
+		
+		$result = "";
+		
+		// Begin outer container...
+		$outerContainerStyles  = "display: flex;";
+		$outerContainerStyles .= " justify-content: center;";
+		$outerContainerStyles .= " align-items: center;";
+		$outerContainerStyles .= " height: 100vh;";
+		
+		$result .= "<div class='image-with-colors' style='$outerContainerStyles'>";
+		
+		// Begin right-side container...
+		$rightContainerStyles  = "display: flex;";
+		$rightContainerStyles .= " flex-direction: column;";
+		$rightContainerStyles .= " justify-content: center;";
+		$rightContainerStyles .= " align-items: stretch;";
+		$rightContainerStyles .= " flex: 3;";
+		$rightContainerStyles .= " height: 100%;";
+		
+		$result .= "<div style='$rightContainerStyles'>";
+		
+		// Begin color container...
+		$colorContainerStyles  = "display: flex;";
+		$colorContainerStyles .= " justify-content: center;";
+		$colorContainerStyles .= " align-items: flex-start;";
+		$colorContainerStyles .= " flex: 1;";
+		$colorContainerStyles .= " overflow-y: auto;";
+		
+		$result .= "<div style='$colorContainerStyles'>";
+		
+		$result .= $colorCollection->toHTMLColorBlockTable(null, 5);
+		
+		$result .= "</div>";
+		// End color container.
+		
+		$result .= "</div>";
+		// End right-side container.
+		
+		$result .= "</div>";
+		// End outer container.
+		
+		return $result;
+		
+	}
+	
 	public static function showColorCollectionWithImage(string $imagePath, ColorCollection &$colorCollection,
 														string $headerContent = ""): string {
 		
