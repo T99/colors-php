@@ -78,6 +78,70 @@ class Color {
 	
 	}
 	
+	public static function fromHSB(float $hue, float $saturation, float $brightness): Color {
+		
+		$chroma = $brightness * $saturation;
+		
+		$huePrime = $hue / 60;
+		$x = $chroma * (1 - abs(($huePrime % 2) - 1));
+		
+		if ($huePrime <= 1)      $color = new Color($chroma, $x, 0);
+		else if ($huePrime <= 2) $color = new Color($x, $chroma, 0);
+		else if ($huePrime <= 3) $color = new Color(0, $chroma, $x);
+		else if ($huePrime <= 4) $color = new Color(0, $x, $chroma);
+		else if ($huePrime <= 5) $color = new Color($x, 0, $chroma);
+		else if ($huePrime <= 6) $color = new Color($chroma, 0, $x);
+		else                     $color = new Color(0, 0, 0);
+		
+		$m = $brightness - $chroma;
+		
+		$color->setRed($color->getRed() + $m);
+		$color->setGreen($color->getGreen() + $m);
+		$color->setBlue($color->getBlue() + $m);
+		
+		$color->hue = $hue;
+		$color->saturation_hsb = $saturation;
+		$color->brightness = $brightness;
+		
+		return $color;
+	
+	}
+	
+	public static function fromHSV(float $hue, float $saturation, float $value): Color {
+		
+		return Color::fromHSB($hue, $saturation, $value);
+		
+	}
+	
+	public static function fromHSL(float $hue, float $saturation, float $lightness): Color {
+		
+		$chroma = $saturation * (1 - abs((2 * $lightness) - 1));
+		
+		$huePrime = $hue / 60;
+		$x = $chroma * (1 - abs(($huePrime % 2) - 1));
+		
+		if ($huePrime < 1)      $color = new Color($chroma, $x, 0);
+		else if ($huePrime < 2) $color = new Color($x, $chroma, 0);
+		else if ($huePrime < 3) $color = new Color(0, $chroma, $x);
+		else if ($huePrime < 4) $color = new Color(0, $x, $chroma);
+		else if ($huePrime < 5) $color = new Color($x, 0, $chroma);
+		else if ($huePrime < 6) $color = new Color($chroma, 0, $x);
+		else                     $color = new Color(0, 0, 0);
+		
+		$m = $lightness - ($chroma / 2);
+		
+		$color->setRed($color->getRed() + $m);
+		$color->setGreen($color->getGreen() + $m);
+		$color->setBlue($color->getBlue() + $m);
+		
+		$color->hue = $hue;
+		$color->saturation_hsl = $saturation;
+		$color->lightness = $lightness;
+		
+		return $color;
+		
+	}
+	
 	public static function white(): Color {
 		
 		return new Color(255, 255, 255);
