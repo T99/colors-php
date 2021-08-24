@@ -171,14 +171,15 @@ class ColorCollection implements ArrayAccess, Iterator {
 		
 	}
 	
-	public function head(int $amount): ColorCollection {
+	public function head(int $amount, int $offset = 0): ColorCollection {
 		
 		$result = new ColorCollection();
 		$resultSize = 0;
 		
 		foreach ($this->colorOccurrences as $colorOccurrence) {
 			
-			if ($resultSize >= $amount) return $result;
+			if ($offset > 0) $offset--;
+			else if ($resultSize >= $amount) return $result;
 			else {
 				
 				$result->addColorOccurrences($colorOccurrence);
