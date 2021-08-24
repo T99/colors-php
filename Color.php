@@ -293,14 +293,14 @@ class Color {
 		$cMin = min($redPrime, $greenPrime, $bluePrime);
 		$cDelta = $cMax - $cMin;
 		
-		if ($cDelta === 0) $this->hue = 0;
+		if ($cDelta < 0.000001) $this->hue = 0;
 		else {
 			
 			switch ($cMax) {
 				
 				case $redPrime: {
 					
-					$this->hue = 60 * ((($greenPrime - $bluePrime) / $cDelta) % 6);
+					$this->hue = 60 * (fmod(($greenPrime - $bluePrime) / $cDelta, 6));
 					break;
 					
 				}
@@ -322,6 +322,9 @@ class Color {
 			}
 			
 		}
+		
+		// Normalize hue to the range [0..360]
+		$this->hue = fmod($this->hue + 360, 360);
 		
 		if ($cMax === 0) $this->saturation_hsb = 0;
 		else $this->saturation_hsb = $cDelta / $cMax;
