@@ -351,7 +351,7 @@ class Color {
 		
 		$this->lightness = $this->brightness * (1 - ($this->saturation_hsb / 2));
 		
-		if ($this->lightness === 0 || $this->brightness === 1) $this->saturation_hsl = 0;
+		if ($this->lightness === 0 || $this->lightness === 1) $this->saturation_hsl = 0;
 		else {
 			
 			$this->saturation_hsl = ($this->brightness - $this->lightness) / min($this->lightness, 1 - $this->lightness);
