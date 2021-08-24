@@ -474,9 +474,12 @@ class Color {
 	
 	public function toHSBString(): string {
 		
-		$hue = $this->getHue();
-		$saturation = $this->getHSBSaturation();
-		$brightness = $this->getBrightness();
+		$hue =        $this->getHue();
+		$saturation = number_format($this->getHSBSaturation(), 2);
+		$brightness = number_format($this->getBrightness(), 2);
+		
+		if ($saturation === "1.00") $saturation = 1;
+		if ($brightness === "1.00") $brightness = 1;
 		
 		return "hsb($hue, $saturation, $brightness)";
 		
@@ -488,15 +491,21 @@ class Color {
 		$saturation = $this->getHSBSaturation();
 		$brightness = $this->getBrightness();
 		
+		if ($saturation === "1.00") $saturation = 1;
+		if ($brightness === "1.00") $brightness = 1;
+		
 		return "hsv($hue, $saturation, $brightness)";
 		
 	}
 	
 	public function toHSLString(): string {
 		
-		$hue = $this->getHue();
-		$saturation = $this->getHSLSaturation();
-		$lightness = $this->getLightness();
+		$hue =        $this->getHue();
+		$saturation = number_format($this->getHSLSaturation(), 2);
+		$lightness =  number_format($this->getLightness(), 2);
+		
+		if ($saturation === "1.00") $saturation = 1;
+		if ($lightness === "1.00") $lightness = 1;
 		
 		return "hsl($hue, $saturation, $lightness)";
 		
