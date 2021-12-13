@@ -2,25 +2,17 @@
 
 class ColorNaming {
 	
-	public static function isBlack(Color $color, float $threshold = 0.3): bool {
+	public static function red(Color $color): array {
 		
-		return $color->getLightness() <= $threshold;
+		$reds = [];
 		
-	}
-	
-	public static function isWhite(Color $color, float $threshold = 0.9): bool {
-		
-		return $color->getLightness() >= $threshold;
-		
-	}
-	
-	public static function isGrey(Color $color, float $threshold = 0.4): bool {
-		
-		return $color->getHSLSaturation() <= $threshold;
-		
-	}
-	
-	public static function isRed(Color $color, bool $excludeGreyscale = true): bool {
+		if (($color->getHue() >= 330) || ($color->getHue() <= 20)) {
+			
+			$reds[] = "red";
+			
+			if ($color->getHSLSaturation() <= 0.25) $reds[] = "grey";
+			
+		}
 		
 		if ($excludeGreyscale) {
 			
@@ -40,7 +32,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isOrange(Color $color, bool $excludeGreyscale = true): bool {
+	public static function orange(Color $color): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -60,7 +52,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isBrown(Color $color, bool $excludeGreyscale = true): bool {
+	public static function brown(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -80,7 +72,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isYellow(Color $color, bool $excludeGreyscale = true): bool {
+	public static function yellow(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -100,7 +92,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isBeige(Color $color, bool $excludeGreyscale = true): bool {
+	public static function beige(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -120,7 +112,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isGreen(Color $color, bool $excludeGreyscale = true): bool {
+	public static function green(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -140,7 +132,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isCyan(Color $color, bool $excludeGreyscale = true): bool {
+	public static function cyan(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -160,7 +152,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isBlue(Color $color, bool $excludeGreyscale = true): bool {
+	public static function blue(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -180,7 +172,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isPurple(Color $color, bool $excludeGreyscale = true): bool {
+	public static function purple(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -200,7 +192,7 @@ class ColorNaming {
 		
 	}
 	
-	public static function isPink(Color $color, bool $excludeGreyscale = true): bool {
+	public static function pink(Color $color, bool $excludeGreyscale = true): array {
 		
 		if ($excludeGreyscale) {
 			
@@ -221,44 +213,21 @@ class ColorNaming {
 	}
 	
 	public static function getNames(Color &$color): array {
-
-		$names = [];
-
-		if (ColorNaming::isRed($color))    $names[] = "red";
-		if (ColorNaming::isOrange($color)) $names[] = "orange";
-		if (ColorNaming::isBrown($color))  $names[] = "brown";
-		if (ColorNaming::isYellow($color)) $names[] = "yellow";
-		if (ColorNaming::isBeige($color))  $names[] = "beige";
-		if (ColorNaming::isGreen($color))  $names[] = "green";
-		if (ColorNaming::isCyan($color))   $names[] = "cyan";
-		if (ColorNaming::isBlue($color))   $names[] = "blue";
-		if (ColorNaming::isPurple($color)) $names[] = "purple";
-		if (ColorNaming::isPink($color))   $names[] = "pink";
 		
-		if (count($names) === 0) {
-			
-			if (ColorNaming::isWhite($color))      $names[] = "white";
-			else if (ColorNaming::isBlack($color)) $names[] = "black";
-			else if (ColorNaming::isGrey($color))  $names[] = "grey";
-			
-		}
-		
-		if (count($names) === 0) {
-			
-			if (ColorNaming::isRed($color, false))    $names[] = "red";
-			if (ColorNaming::isOrange($color, false)) $names[] = "orange";
-			if (ColorNaming::isBrown($color, false))  $names[] = "brown";
-			if (ColorNaming::isYellow($color, false)) $names[] = "yellow";
-			if (ColorNaming::isBeige($color, false))  $names[] = "beige";
-			if (ColorNaming::isGreen($color, false))  $names[] = "green";
-			if (ColorNaming::isCyan($color, false))   $names[] = "cyan";
-			if (ColorNaming::isBlue($color, false))   $names[] = "blue";
-			if (ColorNaming::isPurple($color, false)) $names[] = "purple";
-			if (ColorNaming::isPink($color, false))   $names[] = "pink";
-			
-		}
+		return [];
 
-		return $names;
+		return array_unique(array_merge(
+			ColorNaming::red($color),
+			ColorNaming::orange($color),
+			ColorNaming::brown($color),
+			ColorNaming::yellow($color),
+			ColorNaming::beige($color),
+			ColorNaming::green($color),
+			ColorNaming::cyan($color),
+			ColorNaming::blue($color),
+			ColorNaming::purple($color),
+			ColorNaming::pink($color)
+		));
 
 	}
 	
