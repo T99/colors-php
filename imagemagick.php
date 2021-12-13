@@ -1,14 +1,19 @@
 <?php
 
 include_once "./Color.php";
-include_once "./matrices.php";
+include_once "./ColorNaming.php";
 include_once "./ColorDebugger.php";
 include_once "./ColorOccurrence.php";
 include_once "./ColorCollection.php";
 include_once "./ColorImageProcessor.php";
+
 include_once "./functions/ColorMergerFunctions.php";
 include_once "./functions/ColorEquivalencyFunctions.php";
 include_once "./functions/ColorCollectionFilterFunctions.php";
+
+include_once "./util/db.php";
+include_once "./util/density.php";
+include_once "./util/colors-to-database.php";
 
 echo "
 	<style>
@@ -24,58 +29,61 @@ echo "
 	</style>
 ";
 
-echo "<pre>";
+//$colors = new ColorCollection();
+//$step = 5;
+//
+//for ($hue = 0; $hue <= 360; $hue += $step) {
+//
+//	for ($saturation = 0; $saturation <= 1.00001; $saturation += $step / 100) {
+//
+////		$lightness = 0.75;
+//
+//		for ($lightness = 0; $lightness <= 1.00001; $lightness += $step / 100) {
+//
+//			$color = Color::fromHSL($hue, $saturation, $lightness);
+//
+////			if (count(ColorNaming::getNames($color)) === 0) $colors->addColors($color);
+//
+////			if (ColorNaming::isBrown($color)) $colors->addColors($color);
+//
+//			$colors->addColors($color);
+//
+//		}
+//
+//	}
+//
+//}
 
-$imagePath = "examples/patterned-chair.jpg";
+//addColorsToDatabase();
 
-$imageProcessor = new ColorImageProcessor($imagePath);
-$imageColors = $imageProcessor->getDistinctColors(1);
+//$colors = $colors->head(3000, 3000);
 
-$imageColors = $imageColors->getFilteredColorCollection(
-	ColorCollectionFilterFunctions::createGreyscaleFilter(239),
-	true
-);
+//for ($r = 0; $r <= 255; $r += $step) {
+//
+//	for ($g = 0; $g <= 255; $g += $step) {
+//
+//		for ($b = 0; $b <= 255; $b += $step) {
+//
+//			$color = new Color($r, $g, $b);
+//
+//			if (ColorNaming::isRed($color)) $colors->addColors($color);
+//
+//		}
+//
+//	}
+//
+//}
 
-//$imageColors = $imageColors->getFilteredColorCollection(
-//	ColorCollectionFilterFunctions::createGreyscaleFilter(35, false),
-//	true
-//);
+//echo ColorDebugger::showColorCollection($colors);
 
-$imageColors = $imageColors->getFilteredColorCollection(
-	ColorCollectionFilterFunctions::createAbsoluteOccurrenceFilterFunction(5)
-);
-
-$imageColors = $imageColors->getMergedColorCollection(
-	ColorEquivalencyFunctions::createCIE94DeltaEEquivalencyFunction(20),
-	ColorMergerFunctions::createWeightedAverageMergerFunction()
-);
-
-$imageColors = $imageColors->getFilteredColorCollection(
-	ColorCollectionFilterFunctions::createRelativeOccurrenceFilter(0.1)
-);
-
-//$imageColors = $imageColors->getFilteredColorCollection(
-//	ColorCollectionFilterFunctions::createMinimumOccurrenceFilterFunction(500)
-//);
-
-//$imageColors->sortByIncidence();
-
-//$imageColors = $imageColors->head(3);
-
-//$imageColors = $imageColors->getMergedColorCollection(
-//	ColorEquivalencyFunctions::createImpliedEquivalencyFunction(),
-//	ColorMergerFunctions::createWeightedAverageMergerFunction()
-//);
-
-$outputColors = $imageColors;
-
-$outputColors->sortByIncidence();
-
-echo "</pre>";
+$startTime = microtime(true);
+$imagePath = "examples/stressless-consul-chair-ottoman.jpg";
+$imageProcessor = ColorImageProcessor::fromURI($imagePath);
+$imageSize = $imageProcessor->getImageSize();
+$imageColors = $imageProcessor->getPrimaryImageColors();
 
 echo ColorDebugger::showColorCollectionWithImage(
 	$imagePath,
-	$outputColors
+	$imageColors,
+	$imageSize->x . "x" . $imageSize->y . " image scanned in " . number_format(microtime(true) - $startTime, 2) . " seconds."
 );
-
-
