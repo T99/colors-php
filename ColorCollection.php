@@ -1,7 +1,7 @@
 <?php
 
 include_once "./Color.php";
-include_once "./NumericallyIndexableMap.php";
+include_once "./struct/NumericallyIndexableMap.php";
 
 class ColorCollection implements ArrayAccess, Iterator {
 	
