@@ -569,7 +569,11 @@ class Color {
 		
 		$stylings = Color::getColorBlockContentStylings();
 		
-		$rgbLabel = "<p style='$stylings'>" . $this->toRGBString() . "</p>\n";
+		$rgbLabel = "<p style='$stylings'>" . $this->toRGBString() . "</p>";
+		
+		$rgbLabel .= "<p style='$stylings'>" . $this->toHSLString() . "</p>";
+		
+		$rgbLabel .= "<p style='$stylings'>" . join(", ", ColorNaming::getNames($this)) . "</p>";
 		
 		$innerContent = $innerContent . $rgbLabel;
 		
